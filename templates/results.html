@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analysis Results</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
+        .report-header { background-color: #007bff; color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center; }
+        .container { max-width: 800px; margin: 30px auto; background-color: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); overflow: hidden; }
+        .section { padding: 20px; border-bottom: 1px solid #eee; }
+        .section h2 { color: #007bff; font-size: 1.3em; margin-bottom: 10px; border-bottom: 2px solid #f0f0f0; padding-bottom: 5px; }
+        ul { list-style-type: disc; margin: 10px 0 0 20px; padding: 0; }
+        li { margin-bottom: 8px; line-height: 1.5; }
+        .severity-low { color: #28a745; font-weight: bold; }
+        .severity-moderate { color: #ffc107; font-weight: bold; }
+        .severity-high { color: #dc3545; font-weight: bold; }
+        .medication-note { background-color: #ffc10730; padding: 10px; border-radius: 5px; margin-top: 15px; border-left: 4px solid #ffc107; font-size: 0.95em; }
+        .footer-action { text-align: center; padding: 20px; background-color: #f0f0f0; }
+        .back-button { display: inline-block; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s; }
+        .back-button:hover { background-color: #5a6268; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="report-header">
+            <h1>Structured AI Analysis Report</h1>
+        </div>
+
+        <div class="section">
+            <h2>🩺 Overall Severity Assessment</h2>
+            {% set severity_class = 'severity-low' if 'Low' in analysis.severity_analysis else ('severity-moderate' if 'Moderate' in analysis.severity_analysis else 'severity-high') %}
+            <p>The AI assesses the overall condition as: <span class="{{ severity_class }}">{{ analysis.severity_analysis }}</span></p>
+        </div>
+
+        <div class="section">
+            <h2>⚠️ Key Abnormal Findings</h2>
+            <ul>
+                {% for finding in analysis.key_abnormal_findings %}
+                    <li>{{ finding }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>👨‍⚕️ Physician Recommendation</h2>
+            <p><strong>Required Action:</strong> {{ analysis.physician_recommendation }}</p>
+            <p><strong>Recommended Specialist:</strong> {{ analysis.recommended_doctor_type }}</p>
+        </div>
+
+        <div class="section">
+            <h2>✅ Precautions and Next Steps</h2>
+            <ul>
+                {% for step in analysis.precautions_and_next_steps %}
+                    <li>{{ step }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        
+       <div class="section">
+    <h2>💊 Medication/Supplement Note</h2>
+    <div class="medication-note">
+        {% if analysis.medication_suggestion %}
+            <p>{{ analysis.medication_suggestion }}</p>
+        {% else %}
+            <p>**CRITICAL CAUTION:** CONSULT A DOCTOR. The AI failed to generate a specific note for this section, emphasizing that you must seek professional medical advice.</p>
+        {% endif %}
+    </div>
+</div>
+
+        <div class="footer-action">
+            <a href="{{ url_for('upload_file') }}" class="back-button">Analyze Another Report</a>
+        </div>
+    </div>
+</body>
+</html>
