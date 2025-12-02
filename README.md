@@ -27,6 +27,7 @@ Config: .env for API keys
 
 Project Structure: 
 
+```text
 clinical-insights/
 │── app.py                     # Flask routes & core logic
 │── analyzer_core.py           # PDF text extraction + Gemini request
@@ -43,6 +44,7 @@ clinical-insights/
 │     ├── results.html         # Analysis dashboard
 │     └── chat.html            # Medical chatbot UI
 └── uploads/                   # Temporary uploads (auto-created)
+```
 
 Installation: 
 
