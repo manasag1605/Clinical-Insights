@@ -1,0 +1,48 @@
+<!-- upload.html -->
+<!-- Page for uploading a medical PDF report for AI analysis -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Upload Medical Report</title>
+
+    <!-- Linking external CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- Disclaimer Banner -->
+    <div class="disclaimer-warning">
+        ⚠️ IMPORTANT: AI-generated insights only. This is NOT medical advice. Consult a healthcare professional for diagnosis or treatment.
+    </div>
+
+    <!-- Main Upload Section -->
+    <section class="section">
+        <div class="container">
+
+            <!-- Card Container for Upload UI -->
+            <div class="upload-card">
+
+                <!-- Page Title -->
+                <h1 class="upload-title">Upload Medical Report</h1>
+
+                <!-- Subtitle Text -->
+                <p class="upload-sub">Upload your PDF and get instant AI insights.</p>
+
+                <!-- Upload Form -->
+                <form method="POST" enctype="multipart/form-data" class="upload-form">
+
+                    <!-- PDF Input Field -->
+                    <input type="file" name="file" accept="application/pdf" required class="simple-file-input">
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="upload-btn">Analyze Report</button>
+                </form>
+
+            </div>
+
+        </div>
+    </section>
+
+</body>
+</html>
