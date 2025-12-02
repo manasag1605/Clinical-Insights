@@ -1,75 +1,241 @@
+<!-- results.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Analysis Results</title>
+    <title>Medical Report Dashboard</title>
+    <!-- Link to external stylesheet (if any) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
-        .report-header { background-color: #007bff; color: white; padding: 20px; border-radius: 8px 8px 0 0; text-align: center; }
-        .container { max-width: 800px; margin: 30px auto; background-color: white; border-radius: 12px; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); overflow: hidden; }
-        .section { padding: 20px; border-bottom: 1px solid #eee; }
-        .section h2 { color: #007bff; font-size: 1.3em; margin-bottom: 10px; border-bottom: 2px solid #f0f0f0; padding-bottom: 5px; }
-        ul { list-style-type: disc; margin: 10px 0 0 20px; padding: 0; }
-        li { margin-bottom: 8px; line-height: 1.5; }
-        .severity-low { color: #28a745; font-weight: bold; }
-        .severity-moderate { color: #ffc107; font-weight: bold; }
-        .severity-high { color: #dc3545; font-weight: bold; }
-        .medication-note { background-color: #ffc10730; padding: 10px; border-radius: 5px; margin-top: 15px; border-left: 4px solid #ffc107; font-size: 0.95em; }
-        .footer-action { text-align: center; padding: 20px; background-color: #f0f0f0; }
-        .back-button { display: inline-block; padding: 10px 20px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 5px; transition: background-color 0.3s; }
-        .back-button:hover { background-color: #5a6268; }
+    /* ----------- GLOBAL ----------- */
+    body {
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #eaf4ff, #f7fbff);
+        margin: 0;
+    }
+
+    /* Page wrapper for centered dashboard */
+    .dashboard-wrapper {
+        max-width: 900px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+
+    /* Main white card containing all results */
+    .results-card {
+        background: white;
+        border-radius: 22px;
+        padding: 35px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Title styling with gradient text */
+    .results-title {
+        font-size: 2rem;
+        font-weight: 800;
+        background: linear-gradient(90deg, hsl(210 90% 45%), hsl(185 60% 50%));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    /* ----------- INDIVIDUAL RESULT BLOCKS ----------- */
+    .result-block {
+        padding: 22px;
+        border-radius: 16px;
+        background: #ffffff;
+        margin-bottom: 20px;
+        border: 1px solid #edf2f7;
+        transition: transform .15s ease, box-shadow .15s ease;
+    }
+
+    .result-block:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.08);
+    }
+
+    /* Heading with small icon */
+    .result-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+    }
+
+    .result-title span {
+        font-size: 1.5rem;
+    }
+
+    /* Themed left border colors for blocks */
+    .severity { border-left: 6px solid hsl(210 90% 45%); }
+    .severity .result-title { color: hsl(210 90% 35%); }
+
+    .abnormal { border-left: 6px solid hsl(30 85% 48%); }
+    .abnormal .result-title { color: hsl(30 85% 40%); }
+
+    .precautions { border-left: 6px solid hsl(150 60% 40%); }
+    .precautions .result-title { color: hsl(150 60% 35%); }
+
+    .meds { border-left: 6px solid hsl(270 60% 55%); }
+    .meds .result-title { color: hsl(270 60% 45%); }
+
+    .doctor { border-left: 6px solid hsl(0 70% 50%); }
+    .doctor .result-title { color: hsl(0 70% 45%); }
+
+    /* CTA button */
+    .results-btn {
+        display: block;
+        text-align: center;
+        padding: 14px;
+        background: hsl(210 90% 45%);
+        color: white;
+        border-radius: 12px;
+        margin-top: 25px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background .15s ease;
+    }
+
+    .results-btn:hover {
+        background: hsl(210 90% 40%);
+    }
+
+    /* --------- Severity Ring --------- */
+    .severity-flex {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        flex-wrap: wrap;
+    }
+
+    .severity-ring {
+        position: relative;
+        width: 110px;
+        height: 110px;
+    }
+
+    .severity-score {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: hsl(210 90% 35%);
+    }
+
+    /* Circular progress ring styles (stroke based) */
+    .progress-ring circle {
+        fill: none;
+        stroke-width: 10;
+        stroke-linecap: round;
+    }
+
+    .progress-ring-bg {
+        stroke: #e2e8f0;
+    }
+
+    /* Dynamic stroke offset uses CSS variable --severity */
+    .progress-ring-value {
+        stroke: hsl(210 90% 45%);
+        stroke-dasharray: 283;
+        stroke-dashoffset: calc(283 - (283 * var(--severity) / 100));
+        transition: stroke-dashoffset 1s ease;
+    }
+
+    .severity-text {
+        max-width: 700px;
+    }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="report-header">
-            <h1>Structured AI Analysis Report</h1>
-        </div>
 
-        <div class="section">
-            <h2>🩺 Overall Severity Assessment</h2>
-            {% set severity_class = 'severity-low' if 'Low' in analysis.severity_analysis else ('severity-moderate' if 'Moderate' in analysis.severity_analysis else 'severity-high') %}
-            <p>The AI assesses the overall condition as: <span class="{{ severity_class }}">{{ analysis.severity_analysis }}</span></p>
-        </div>
-
-        <div class="section">
-            <h2>⚠️ Key Abnormal Findings</h2>
-            <ul>
-                {% for finding in analysis.key_abnormal_findings %}
-                    <li>{{ finding }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        
-        <div class="section">
-            <h2>👨‍⚕️ Physician Recommendation</h2>
-            <p><strong>Required Action:</strong> {{ analysis.physician_recommendation }}</p>
-            <p><strong>Recommended Specialist:</strong> {{ analysis.recommended_doctor_type }}</p>
-        </div>
-
-        <div class="section">
-            <h2>✅ Precautions and Next Steps</h2>
-            <ul>
-                {% for step in analysis.precautions_and_next_steps %}
-                    <li>{{ step }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        
-       <div class="section">
-    <h2>💊 Medication/Supplement Note</h2>
-    <div class="medication-note">
-        {% if analysis.medication_suggestion %}
-            <p>{{ analysis.medication_suggestion }}</p>
-        {% else %}
-            <p>**CRITICAL CAUTION:** CONSULT A DOCTOR. The AI failed to generate a specific note for this section, emphasizing that you must seek professional medical advice.</p>
-        {% endif %}
+    <!-- Small disclaimer banner -->
+    <div class="disclaimer-warning">
+        ⚠️ IMPORTANT: AI-generated insights only. This is NOT medical advice. Consult a healthcare professional.
     </div>
-</div>
 
-        <div class="footer-action">
-            <a href="{{ url_for('upload_file') }}" class="back-button">Analyze Another Report</a>
+    <!-- Dashboard container -->
+    <div class="dashboard-wrapper">
+        <div class="results-card">
+
+            <!-- Page heading -->
+            <h1 class="results-title">Medical Report Summary</h1>
+
+            <!-- Severity Block with ring and short analysis text -->
+            <div class="result-block severity">
+                <div class="result-title">
+                    <span>🩺</span> Severity Analysis
+                </div>
+
+                <div class="severity-flex">
+                    <div class="severity-ring">
+                        <svg class="progress-ring" width="110" height="110">
+                            <circle class="progress-ring-bg" cx="55" cy="55" r="45" />
+                            <circle class="progress-ring-value" cx="55" cy="55" r="45"
+                                style="--severity: {{ analysis.severity_score|default(65) }};" />
+                        </svg>
+                        <div class="severity-score">
+                            {{ analysis.severity_score|default(65) }}%
+                        </div>
+                    </div>
+
+                    <!-- Main severity analysis text pulled from AI analysis -->
+                    <p class="severity-text">{{ analysis.severity_analysis }}</p>
+                </div>
+            </div>
+
+            <!-- Abnormal Findings block (list) -->
+            <div class="result-block abnormal">
+                <div class="result-title">
+                    <span>⚠️</span> Abnormal Findings
+                </div>
+                <ul>
+                    {% for item in analysis.key_abnormal_findings %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Precautions & Next Steps block (list) -->
+            <div class="result-block precautions">
+                <div class="result-title">
+                    <span>🛡️</span> Precautions & Next Steps
+                </div>
+                <ul>
+                    {% for item in analysis.precautions_and_next_steps %}
+                        <li>{{ item }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <!-- Medication suggestion block -->
+            <div class="result-block meds">
+                <div class="result-title">
+                    <span>💊</span> Medication Suggestion
+                </div>
+                <p>{{ analysis.medication_suggestion }}</p>
+            </div>
+
+            <!-- Physician recommendation -->
+            <div class="result-block doctor">
+                <div class="result-title">
+                    <span>👨‍⚕️</span> Doctor Recommendation
+                </div>
+                <p>{{ analysis.physician_recommendation }}<br>
+                <strong>Specialist:</strong> {{ analysis.recommended_doctor_type }}</p>
+            </div>
+
+            <!-- CTA to analyze another report -->
+            <a href="/upload" class="results-btn">Analyze Another Report</a>
+
         </div>
     </div>
+
 </body>
 </html>
