@@ -1,4 +1,4 @@
-#Clinical Insights Assistant
+# Clinical Insights Assistant
 
 ```text
 A Flask application that analyzes medical PDF reports using Google Gemini 2.5 Pro and presents the results in a clean, patient-friendly dashboard.
@@ -7,7 +7,7 @@ A Flask application that analyzes medical PDF reports using Google Gemini 2.5 Pr
 -Interactive Medical Chatbot
 ```
 
-##Features:
+## Features:
 
 ```text
 -PDF Report Interpretation: Extracts text from uploaded PDFs and generates structured insights: severity, abnormal findings, precautions, medication caution, and physician recommendation.
@@ -19,7 +19,7 @@ A Flask application that analyzes medical PDF reports using Google Gemini 2.5 Pr
 -Modern UI: Template-driven frontend with responsive design and severity visuals.
 ```
 
-##Tech Stack:
+## Tech Stack:
 
 ```text
 Backend: Python, Flask, Pydantic
@@ -29,7 +29,7 @@ PDF Extraction: pypdf
 Config: .env for API keys
 ```
 
-##Project Structure: 
+## Project Structure: 
 
 ```text
 clinical-insights/
@@ -50,20 +50,20 @@ clinical-insights/
 └── uploads/                   # Temporary uploads (auto-created)
 ```
 
-##Installation: 
+## Installation: 
 ```text
 pip install -r requirements.txt
 
-###Create a .env file:
+Create a .env file:
 
 GOOGLE_API_KEY=your_api_key_here
 
-###Run the app:
+Run the app:
 
 python app.py
 ```
 
-###Disclaimer
+### Disclaimer
 ```text
 This application provides AI-generated insights for informational use only.
 It is not a substitute for professional medical diagnosis or treatment.
