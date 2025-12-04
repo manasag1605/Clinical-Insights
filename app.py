@@ -10,7 +10,7 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super_secret_key'  # Secret key for session security (change in production)
 app.config['UPLOAD_FOLDER'] = 'uploads'  # Directory where uploaded files will be stored
 
-# Allowed extensions for file uploads
+# Allowed extensions for file uploads 
 ALLOWED_EXTENSIONS = {'pdf'}
 
 # Ensure the upload directory exists
@@ -25,14 +25,14 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-# ------------------- Landing Page -------------------
+# Landing Page 
 @app.route('/')
 def landing():
     """Render the landing page."""
     return render_template('index.html')
 
 
-# ------------------- Upload Page -------------------
+# Upload Page
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     """
@@ -77,7 +77,7 @@ def upload_file():
     return render_template('upload.html')
 
 
-# ------------------- Results Page -------------------
+# Results Page
 @app.route('/results')
 def show_results():
     """Display analysis results stored in session."""
@@ -90,7 +90,7 @@ def show_results():
     return render_template('results.html', analysis=analysis_data)
 
 
-# ------------------- Chat Page -------------------
+# Chat Page
 @app.route('/chat')
 def chat_ui():
     """Render chat interface and reset chat history."""
@@ -98,7 +98,7 @@ def chat_ui():
     return render_template('chat.html')
 
 
-# ------------------- Chat API -------------------
+# Chat API
 @app.route('/chat_api', methods=['POST'])
 def chat_api():
     """
@@ -118,7 +118,7 @@ def chat_api():
         return jsonify({"error": "Analysis failed"}), 500
 
 
-# ------------------- Run Application -------------------
+# Run Application
 if __name__ == '__main__':
     # Enable debug mode for development
     app.run(debug=True)

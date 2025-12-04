@@ -34,8 +34,6 @@ def extract_text_from_pdf(pdf_stream) -> str:
         print(f"PDF extraction error: {e}")
         return ""
 
-
-
 def analyze_report_with_gemini(report_text: str) -> MedicalAnalysis | dict:
     """
     Analyze the extracted medical report text using Gemini AI.
@@ -44,7 +42,6 @@ def analyze_report_with_gemini(report_text: str) -> MedicalAnalysis | dict:
     if not report_text:
         return {"error": "Empty input."}
 
-    # High-level system behavior
     system_instruction = (
         "You are a cautious AI medical assistant. Respond strictly in JSON schema format."
     )
@@ -68,5 +65,4 @@ def analyze_report_with_gemini(report_text: str) -> MedicalAnalysis | dict:
         return MedicalAnalysis.model_validate_json(response.text)
 
     except Exception as e:
-        # Return error if model call fails
         return {"error": f"AI Analysis Failed: {e}"}
